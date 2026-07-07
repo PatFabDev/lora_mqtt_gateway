@@ -46,7 +46,7 @@ The project is designed as a modular IoT gateway and can easily be extended with
                        radio_process()
                               |
                               ▼
-                  parser_parse_payload()
+                       parse_payload()
                               |
                               ▼
                        sensor_data_t
