@@ -90,7 +90,8 @@ lora_mqtt_gateway/
 │   └── sx126x_driver/
 │
 ├── mosquitto/
-│   └── mosquitto.conf
+│   ├── mosquitto.conf
+│   └── passwordfile (created locally)
 │
 └── nodered/
     └── flows.json
@@ -235,6 +236,13 @@ git clone https://github.com/PatFabDev/lora_mqtt_gateway.git
 cd lora_mqtt_gateway
 ```
 
+Create the Mosquitto password file
+
+```bash
+mosquitto_passwd -c mosquitto/passwordfile admin
+chmod 644 mosquitto/passwordfile
+```
+
 Build and start all containers
 
 ```bash
@@ -288,6 +296,7 @@ Create the password file locally:
 
 ```bash
 mosquitto_passwd -c mosquitto/passwordfile admin
+chmod 644 mosquitto/passwordfile
 ```
 
 The supplied credentials are intended for demonstration purposes only.
@@ -313,7 +322,7 @@ Import the flow via
 Menu → Import → nodered/flows.json
 ```
 
-After importing the flow, open the MQTT broker configuration, enter your own MQTT credentials and deploy the flow.
+After importing the flow, open the MQTT broker configuration, enter the credentials configured for your Mosquitto broker and deploy the flow.
 
 ---
 
