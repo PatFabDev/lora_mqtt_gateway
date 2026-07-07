@@ -231,14 +231,14 @@ The example node used during development is based on a **Heltec ESP32 + SX1262**
 Clone the repository
 
 ```bash
-git clone https://github.com/<github_username>/lora_mqtt_gateway.git
+git clone https://github.com/PatFabDev/lora_mqtt_gateway.git
 cd lora_mqtt_gateway
 ```
 
 Build and start all containers
 
 ```bash
-docker compose up -d
+docker compose up --build -d
 ```
 
 Display the gateway logs
