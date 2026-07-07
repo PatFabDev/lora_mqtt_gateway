@@ -1,0 +1,89 @@
+services:
+
+  lora_mqtt_gateway:
+    build:
+      context: ./gateway
+    container_name: lora_mqtt_gateway
+    restart: unless-stopped
+    init: true
+
+    devices:
+      - /dev/spidev0.0:/dev/spidev0.0
+      - /dev/gpiochip0:/dev/gpiochip0
+
+    depends_on:
+      mosquitto:
+        condition: service_healthy
+
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: mosquitto
+    restart: unless-stopped
+
+    ports:
+      - "1883:1883"
+
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./mosquitto/passwordfile:/mosquitto/config/passwordfile:ro
+      - mosquitto-data:/mosquitto/data
+      - mosquitto-log:/mosquitto/log
+
+    healthcheck:
+      test: ["CMD", "mosquitto_pub", "-h", "localhost", "-u", "admin", "-P", "admin", "-t", "healthcheck", "-m", "ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  nodered:
+    image: nodered/node-red:latest
+    container_name: nodered
+    restart: unless-stopped
+
+    ports:
+      - "1880:1880"
+
+    depends_on:
+      mosquitto:
+        condition: service_healthy
+
+    volumes:
+      - nodered-data:/data
+
+  influxdb:
+    image: influxdb:2
+    container_name: influxdb
+    restart: unless-stopped
+
+    ports:
+      - "8086:8086"
+
+    volumes:
+      - influxdb-data:/var/lib/influxdb2
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+
+    environment:
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
+
+    ports:
+      - "3000:3000"
+
+    depends_on:
+      - influxdb
+
+    volumes:
+      - grafana-data:/var/lib/grafana
+
+volumes:
+  mosquitto-data:
+  mosquitto-log:
+  nodered-data:
+  influxdb-data:
+  grafana-data:

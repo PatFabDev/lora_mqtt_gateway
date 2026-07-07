@@ -1,0 +1,20 @@
+# Executable
+gateway/lora_mqtt_gateway
+
+# Mosquitto
+mosquitto/passwordfile
+
+# Build artifacts
+*.o
+build/
+
+# Editor
+.vscode/
+.idea/
+
+# Swap files
+*.swp
+*~
+
+# macOS
+.DS_Store
